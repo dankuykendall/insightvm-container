@@ -1,0 +1,43 @@
+version: "3.7"
+services:
+  console:
+    image: insightvm-console:latest
+    build:
+      dockerfile: Dockerfile
+#    depends_on:
+#      - database
+    ports:
+      - "3780:3780"
+    networks:
+      - insightvm-front-tier
+      - insightvm-back-tier
+#    links:
+#      - database
+    volumes:
+      - insightvm-console-data:/opt/rapid7/persistent_data
+      - insightvm-console-database:/opt/rapid7/nexpose/nsc/nxpgsql
+#  database:
+#    image: postgres:latest
+#    #build:
+#    #  context: insightvm-database/
+#    #  dockerfile: Dockerfile
+#    #### PROD ONLY START ####
+#    #tty: true
+#    #stdin_open: true
+#    #### PROD ONLY END ####
+#    #ports:
+#    #  - "5432:5432"
+#    environment:
+#      - POSTGRES_PASSWORD=test123
+#    restart: always
+#    networks:
+#      - insightvm-back-tier
+
+volumes:
+  insightvm-console-data:
+  insightvm-console-database:
+
+networks:
+  # The presence of these objects is sufficient to define them
+  insightvm-front-tier: {}
+  insightvm-back-tier: {}

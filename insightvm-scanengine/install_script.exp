@@ -1,0 +1,61 @@
+#!/usr/bin/expect -f
+#
+set FIRSTNAME [lindex $argv 0]
+set LASTNAME [lindex $argv 1]
+set COMPANY [lindex $argv 2]
+
+
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+                          ;# script wasn't run conservatively originally
+                        
+if {$force_conservative} {
+        set send_slow {1 .1}
+        proc send {ignore arg} {
+                sleep .1
+                exp_send -s -- $arg
+        }
+}
+set timeout 30
+
+spawn /tmp/Rapid7Setup-Linux64.bin
+match_max 100000
+expect "Do you want to continue?"
+send -- "y\r"
+
+expect "Select only the set of components you want to install:"
+send -- "2\r"
+
+expect "Communication Direction:"
+send -- "2\r"
+
+expect "Where should Rapid7 Vulnerability Management be installed?"
+send -- "/opt/rapid7/nexpose\r"
+
+expect "already exists. Would you like to install to that directory anyway?"
+send -- "y\r"
+
+expect "Minimum requirements met. Select \"Yes\" to continue, \"No\" to cancel installation."
+send -- "y\r"
+
+expect "Pair this engine to the Insight Platform?"
+send -- "n\r"
+
+expect "Failed to pair engine to platform"
+send -- "s\r"
+
+expect "First name:"
+send -- "$FIRSTNAME\r"
+
+expect "Last name:"
+send -- "$LASTNAME\r"
+
+expect "Company:"
+send -- "$COMPANY\r"
+
+set timeout -1
+
+expect "Installation is complete!"
+send -- "\r"
+
+expect eof
